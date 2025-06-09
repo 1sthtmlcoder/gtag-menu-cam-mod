@@ -1,0 +1,30 @@
+name: Build Mod DLL
+
+on:
+  push:
+    paths:
+      - '**.cs'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Compile Mod DLL
+      run: |
+        mkdir output
+        csc /target:library /out:output/VRMenuMod.dll /reference:UnityEngine.dll;BepInEx.dll VRMenuMod.cs
+
+    - name: Upload Compiled DLL
+      uses: actions/upload-artifact@v3
+      with:
+        name: VRMenuMod
+        path: output/VRMenuMod.dll
